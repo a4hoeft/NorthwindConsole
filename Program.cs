@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using NorthwindConsole.Model;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 string path = Directory.GetCurrentDirectory() + "//nlog.config";
 
 // create instance of Logger
@@ -15,8 +16,22 @@ do
 {
   Console.WriteLine("1) Display categories");
   Console.WriteLine("2) Add category");
-  Console.WriteLine("3) Display Category and related products");
+  //TODO Edit a specified record from the Categories table
+  //TODO Display all Categories in the Categories table (CategoryName and Description)
+  Console.WriteLine("3) Display Category and related products");//TODO Display a specific Category and its related active product data (CategoryName, ProductName)
+  //TODO Display all Categories and their related active (not discontinued) product data (CategoryName, ProductName)
   Console.WriteLine("4) Display all Categories and their related products");
+  //TODO Add new records to the Products table
+  //TODO Edit a specified record from the Products table
+  //TODODisplay all records in the Products table (ProductName only) - user decides if they want to see all products, discontinued products, or active (not discontinued) products. Discontinued products should be distinguished from active products.
+  //TODO Display a specific Product (all product fields should be displayed)
+// TODO Use NLog to track user functions
+
+//TODO Delete a specified existing record from the Products table (account for Orphans in related tables)
+//TODO Delete a specified existing record from the Categories table (account for Orphans in related tables)
+
+//TODO Use data annotations and handle ALL user errors gracefully & log all errors using NLog
+
   Console.WriteLine("Enter to quit");
   string? choice = Console.ReadLine();
   Console.Clear();
