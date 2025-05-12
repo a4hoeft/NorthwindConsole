@@ -24,13 +24,17 @@ do
   //TODO show active products in green
   Console.WriteLine("6) Edit Category");
  Console.WriteLine("7) Delete Category");
- Console.WriteLine("8) Display Products");
-  //Console.WriteLine("9) Add Product by Category");
-  //Console.WriteLine("10) Edit Product");
-  //Console.WriteLine("11) Delete Product");
+ Console.WriteLine("8) Display Products"); 
+ //TODO Display all records in the Products table (ProductName only) 
+ // - user decides if they want to see all products, discontinued products,
+ //  or active (not discontinued) products. 
+ // Discontinued products should be distinguished from active products.
+ 
+  Console.WriteLine("9) Add Product by Category");//(TODO) Remove the add product by category option
   //TODO Add new records to the Products table
-  //TODO Edit a specified record from the Products table
-  //TODODisplay all records in the Products table (ProductName only) - user decides if they want to see all products, discontinued products, or active (not discontinued) products. Discontinued products should be distinguished from active products.
+  Console.WriteLine("10) Edit Product");
+Console.WriteLine("11) Delete Product");
+  
   //TODO Display a specific Product (all product fields should be displayed)
 // TODO Use NLog to track user functions
 
@@ -209,7 +213,7 @@ do
     }
   }
   else if (choice == "7")
-  
+
   {
     // Delete Category
     var db = new DataContext();
@@ -254,26 +258,111 @@ do
   else if (choice == "9")
   {
     // Add Product by Category
+
+    var db = new DataContext();
+    var query = db.Categories.OrderBy(p => p.CategoryId);
+    Console.WriteLine("Select the category you want to add a product to:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.CategoryId}) {item.CategoryName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
+    logger.Info($"CategoryId {id} selected");
+
+
+
+
+    Category category = db.Categories.FirstOrDefault(c => c.CategoryId == id)!;
+    Console.WriteLine($"Current Name: {category.CategoryName}");
+    Console.WriteLine($"Current Description: {category.Description}");
+    Console.WriteLine("Enter new product name:");
+    string? name = Console.ReadLine();
+    Console.WriteLine("Enter new product price:");
+    decimal price = decimal.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product quantity:");
+    int quantity = int.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product supplier:");
+    string? supplier = Console.ReadLine();
+    Console.WriteLine("Enter new product quantity per unit:");
+    string? quantityPerUnit = Console.ReadLine();
+    Console.WriteLine("Enter new product reorder level:");
+    int reorderLevel = int.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product discontinued (true/false):");
+    bool discontinued = bool.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product minimum order quantity:");
+    int minimumOrderQuantity = int.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product maximum order quantity:");
+    int maximumOrderQuantity = int.Parse(Console.ReadLine()!);
+    Console.WriteLine("Enter new product unit:");
+    string? unit = Console.ReadLine();
+
+
   }
   else if (choice == "10")
   {
     // Edit Product
+    var db = new DataContext();
+    var query = db.Products.OrderBy(p => p.ProductId);
+    Console.WriteLine("Select the product you want to edit:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.ProductId}) {item.ProductName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
 
+    logger.Info($"ProductId {id} selected");
+    Product product = db.Products.FirstOrDefault(c => c.ProductId == id)!;
+    Console.WriteLine($"Current Name: {product.ProductName}");
+    Console.WriteLine($"Current ID: {product.ProductId}");
+    Console.WriteLine("Enter new name:");
+    string? name = Console.ReadLine();
+    if (!string.IsNullOrEmpty(name))
+      product.ProductName = name;
+
+    Console.WriteLine("Enter new price:");
+    decimal price = decimal.Parse(Console.ReadLine()!);
+    if (price > 0)
+      product.UnitPrice = price;  
+    Console.WriteLine("Enter new quantity:");
+    
   }
 
   else if (choice == "11")
   {
     // Delete Product
+    var db = new DataContext();
+    var query = db.Products.OrderBy(p => p.ProductId);
+    Console.WriteLine("Select the product you want to delete:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.ProductId}) {item.ProductName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
+    logger.Info($"ProductId {id} selected");
+    Product product = db.Products.FirstOrDefault(c => c.ProductId == id)!;
+    db.Products.Remove(product); // Remove the product from the database context
+    db.SaveChanges(); // Save changes to the database
+    logger.Info($"Product '{product.ProductName}' deleted successfully.");
+
   }
- 
-  else if (choice == "15")
-  {
-    // Delete a specified existing record from the Categories table
-  }
-  else if (String.IsNullOrEmpty(choice))
+  else if (string.IsNullOrEmpty(choice))
   {
     break;
   }
+  else
+  {
+    Console.WriteLine("Invalid choice. Please try again.");
+  }
+ 
   Console.WriteLine();
 } while (true);
 
