@@ -23,8 +23,9 @@ do
   Console.WriteLine("2)Add");
   Console.WriteLine("3)Edit");
   Console.WriteLine("4)Delete");
+  Console.WriteLine("5)Exit");
+  Console.WriteLine("Enter your choice (1-5):");
 
-  Console.WriteLine("Enter to quit");
   string? choice = Console.ReadLine();
   Console.Clear();
   logger.Info("Option {choice} selected", choice);
@@ -157,12 +158,17 @@ do
 
 
     break;  
+  case "5":
+    Console.WriteLine("Exiting the program...");
+    logger.Info("Exiting the program");
+    return; // Exit the loop and end the program
+
   default:
     Console.WriteLine("Invalid choice. Please try again.");
     break;  
 }
 } while (true);
-logger.Info("Exiting the program");
+
 
 
 
