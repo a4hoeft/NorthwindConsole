@@ -17,10 +17,16 @@ do
   Console.WriteLine("1) Display categories");
   Console.WriteLine("2) Add category");
   //TODO Edit a specified record from the Categories table
-  //TODO Display all Categories in the Categories table (CategoryName and Description)
-  Console.WriteLine("3) Display Category and related products");//TODO Display a specific Category and its related active product data (CategoryName, ProductName)
-  //TODO Display all Categories and their related active (not discontinued) product data (CategoryName, ProductName)
-  Console.WriteLine("4) Display all Categories and their related products");
+  Console.WriteLine("3) Display Category and related products");
+  Console.WriteLine("4) Display all Categories and their active products");
+  
+  Console.WriteLine("5) Display all Categories and their related products");
+  Console.WriteLine("6) Edit Category");
+ // Console.WriteLine("7) Delete Category");
+ // Console.WriteLine("8) Display Products");
+  //Console.WriteLine("9) Add Product by Category");
+  //Console.WriteLine("10) Edit Product");
+  //Console.WriteLine("11) Delete Product");
   //TODO Add new records to the Products table
   //TODO Edit a specified record from the Products table
   //TODODisplay all records in the Products table (ProductName only) - user decides if they want to see all products, discontinued products, or active (not discontinued) products. Discontinued products should be distinguished from active products.
@@ -81,8 +87,12 @@ do
       }
       else
       {
-        logger.Info("Validation passed");
-        // TODO: save category to db
+       {
+            logger.Info("Validation passed");
+            db.Categories.Add(category); // Add the category to the database context
+            db.SaveChanges(); // Save changes to the database
+            logger.Info($"Category '{category.CategoryName}' added successfully.");
+        }
       }
     }
     if (!isValid)
@@ -115,6 +125,7 @@ do
       Console.WriteLine($"\t{p.ProductName}");
     }
   }
+
   else if (choice == "4")
   {
     var db = new DataContext();
@@ -125,6 +136,74 @@ do
       foreach (Product p in item.Products)
       {
         Console.WriteLine($"\t{p.ProductName}");
+      }
+    }
+  }
+  else if (choice == "5")
+  {
+    var db = new DataContext();
+    var query = db.Categories.Include("Products").OrderBy(p => p.CategoryId);
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.CategoryName}");
+      foreach (Product p in item.Products)
+      {
+        Console.WriteLine($"\t{p.ProductName}");
+      }
+    }
+  }
+  else if (choice == "6")
+  {
+    // Edit Category
+    var db = new DataContext();
+    var query = db.Categories.OrderBy(p => p.CategoryId);
+    Console.WriteLine("Select the category you want to edit:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.CategoryId}) {item.CategoryName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
+    logger.Info($"CategoryId {id} selected");
+    Category category = db.Categories.FirstOrDefault(c => c.CategoryId == id)!;
+    Console.WriteLine($"Current Name: {category.CategoryName}");
+    Console.WriteLine($"Current Description: {category.Description}");
+    Console.WriteLine("Enter new name:");
+    string? name = Console.ReadLine();
+    if (!string.IsNullOrEmpty(name))
+      category.CategoryName = name;
+    Console.WriteLine("Enter new description:");
+    string? desc = Console.ReadLine();
+    if (!string.IsNullOrEmpty(desc))
+      category.Description = desc;
+    
+    ValidationContext context = new ValidationContext(category, null, null);
+    List<ValidationResult> results = new List<ValidationResult>();
+    var isValid = Validator.TryValidateObject(category, context, results, true);
+    if (isValid)
+    {
+      // check for unique name
+      if (db.Categories.Any(c => c.CategoryName == category.CategoryName && c.CategoryId != id))
+      {
+        // generate validation error
+        isValid = false;
+        results.Add(new ValidationResult("Name exists", ["CategoryName"]));
+      }
+      else
+      {
+        logger.Info("Validation passed");
+        db.Categories.Update(category); // Update the category in the database context
+        db.SaveChanges(); // Save changes to the database
+        logger.Info($"Category '{category.CategoryName}' updated successfully.");
+      }
+    }
+    if (!isValid)
+    {
+      foreach (var result in results)
+      {
+        logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
       }
     }
   }
