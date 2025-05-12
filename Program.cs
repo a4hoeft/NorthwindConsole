@@ -20,10 +20,11 @@ do
   Console.WriteLine("3) Display Category and related products");
   Console.WriteLine("4) Display all Categories and their active products");
   
-  Console.WriteLine("5) Display all Categories and their related products");
+  Console.WriteLine("5) Display all Categories and their related products"); //TODO show discontinued products in red
+  //TODO show active products in green
   Console.WriteLine("6) Edit Category");
- // Console.WriteLine("7) Delete Category");
- // Console.WriteLine("8) Display Products");
+ Console.WriteLine("7) Delete Category");
+ Console.WriteLine("8) Display Products");
   //Console.WriteLine("9) Add Product by Category");
   //Console.WriteLine("10) Edit Product");
   //Console.WriteLine("11) Delete Product");
@@ -206,6 +207,68 @@ do
         logger.Error($"{result.MemberNames.First()} : {result.ErrorMessage}");
       }
     }
+  }
+  else if (choice == "7")
+  
+  {
+    // Delete Category
+    var db = new DataContext();
+    var query = db.Categories.OrderBy(p => p.CategoryId);
+    Console.WriteLine("Select the category you want to delete:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.CategoryId}) {item.CategoryName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
+    logger.Info($"CategoryId {id} selected");
+    Category category = db.Categories.FirstOrDefault(c => c.CategoryId == id)!;
+    db.Categories.Remove(category); // Remove the category from the database context
+    db.SaveChanges(); // Save changes to the database
+    logger.Info($"Category '{category.CategoryName}' deleted successfully.");
+  }
+  else if (choice == "8")
+  {
+    // Display Products
+    var db = new DataContext();
+    var query = db.Products.OrderBy(p => p.ProductId);
+    Console.WriteLine("Select the product you want to display:");
+    Console.ForegroundColor = ConsoleColor.DarkRed;
+    foreach (var item in query)
+    {
+      Console.WriteLine($"{item.ProductId}) {item.ProductName}");
+    }
+    Console.ForegroundColor = ConsoleColor.White;
+
+    int id = int.Parse(Console.ReadLine()!);
+    Console.Clear();
+    logger.Info($"ProductId {id} selected");
+    Product product = db.Products.FirstOrDefault(c => c.ProductId == id)!;
+    Console.WriteLine($"Product Name: {product.ProductName}");
+    Console.WriteLine($"Product ID: {product.ProductId}");
+   
+
+  }
+  else if (choice == "9")
+  {
+    // Add Product by Category
+  }
+  else if (choice == "10")
+  {
+    // Edit Product
+
+  }
+
+  else if (choice == "11")
+  {
+    // Delete Product
+  }
+ 
+  else if (choice == "15")
+  {
+    // Delete a specified existing record from the Categories table
   }
   else if (String.IsNullOrEmpty(choice))
   {
