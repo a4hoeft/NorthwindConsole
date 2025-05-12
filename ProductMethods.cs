@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NorthwindConsole.Model;
 
-public class Product1
+public class ProductMethods
 {
     // Method to view all products
     public static void ViewProducts()

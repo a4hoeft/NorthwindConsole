@@ -19,10 +19,11 @@ logger.Info("Program started");
 do
 {
   Console.WriteLine("Select an option:");
-  Console.WriteLine("1)Display");
-  Console.WriteLine("2)Add");
-  Console.WriteLine("3)Edit");
-  Console.WriteLine("4)Delete");
+  Console.WriteLine("1)Display"); //TODO make pretty display for each type
+  Console.WriteLine("2)Add"); //ensure logger adds to the log and added item is actually added
+  Console.WriteLine("3)Edit"); //TODO makesure all are tested
+  Console.WriteLine("4)Delete"); //TODO Make user pass a fail safe for each delete. (Categories delete products)(after last product in a category is deleted all categorie is deleted) 
+  //TODO maybe add a Clean up option to delet all orphaned products and categories
   Console.WriteLine("5)Exit");
   Console.WriteLine("Enter your choice (1-5):");
 
@@ -44,7 +45,7 @@ do
        switch (displayChoice)
       {
       case "1":
-       Category.ViewCategories();
+       CategoryMethods.ViewCategories();
         break;
       case "2":
        DisplayCategoryAndProducts();
@@ -76,12 +77,12 @@ do
     {
         case "1":
             // Add category functionality
-            Category.AddCategory();
+            CategoryMethods.AddCategory();
             break;
 
         case "2":
             // Add product functionality
-            Product1.AddProduct();
+            ProductMethods.AddProduct();
             break;
 
         case "3":
@@ -110,12 +111,12 @@ do
     {
         case "1":
             // Edit category functionality
-            Category.EditCategory();
+            CategoryMethods.EditCategory();
             break;
 
         case "2":
             // Edit product functionality
-            Product1.EditProduct();
+            ProductMethods.EditProduct();
             break;
 
         case "3":
@@ -143,12 +144,12 @@ do
     {
         case "1":
             // Delete category functionality
-            Category.DeleteCategory();
+            CategoryMethods.DeleteCategory();
             break;
 
         case "2":
             // Delete product functionality
-            Product1.DeleteProduct();
+            ProductMethods.DeleteProduct();
             break;
 
         default:
@@ -201,12 +202,12 @@ void DisplayCategoryAndActiveProducts()
 }
 void AddCategoryAndProduct()
 {
-  Category.AddCategory();
-  Product1.AddProduct();
+  CategoryMethods.AddCategory();
+  ProductMethods.AddProduct();
 }
 void EditCategoryAndAddProduct()
 {
-  Category.EditCategory();
-  Product1.AddProduct();
+  CategoryMethods.EditCategory();
+  ProductMethods.AddProduct();
 }
 

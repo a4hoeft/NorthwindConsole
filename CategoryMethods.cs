@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NorthwindConsole.Model;
 
-public class Category
+public class CategoryMethods
 {
     // Method to view all categories
     public static void ViewCategories()
