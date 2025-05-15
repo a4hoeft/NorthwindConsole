@@ -48,8 +48,8 @@ do
                     Console.WriteLine("1) Display categories and their descriptions");
                     Console.WriteLine("2) Display all categories and related products");
                     Console.WriteLine("3) Display all categories and their active products");
-                    Console.WriteLine("4) Display all categories and their discontinued products");
-                    Console.WriteLine("5) Display one category and its active and discontinued products");
+                    Console.WriteLine("4) Display one category and its active and discontinued products");
+                    
                     string? categoryChoice = Console.ReadLine();
                     Console.Clear();
                     logger.Info("Category display option {categoryChoice} selected", categoryChoice);
