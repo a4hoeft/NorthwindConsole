@@ -211,6 +211,11 @@ public static void DisplayProductById(int productId)
     public static void DeleteProduct()
     {
         using var db = new DataContext();
+
+        // Display all products before asking for selection
+        ViewProducts();
+        Console.WriteLine("Select a product to delete:");
+
         Console.WriteLine("Enter the ID of the product to delete:");
         if (!int.TryParse(Console.ReadLine(), out int productId))
         {
