@@ -211,25 +211,25 @@ public static void DisplayProductById(int productId)
     public static void DeleteProduct()
     {
         using var db = new DataContext();
-        var products = db.Products.OrderBy(p => p.ProductId).ToList();
-
-        Console.WriteLine("Select a product to delete:");
-        foreach (var product in products)
-        {
-            Console.WriteLine($"{product.ProductId}: {product.ProductName}");
-        }
-
-        if (!int.TryParse(Console.ReadLine(), out int productId) || !products.Any(p => p.ProductId == productId))
+        Console.WriteLine("Enter the ID of the product to delete:");
+        if (!int.TryParse(Console.ReadLine(), out int productId))
         {
             Console.WriteLine("Invalid product ID.");
             return;
         }
 
-        var selectedProduct = db.Products.First(p => p.ProductId == productId);
-        db.Products.Remove(selectedProduct);
-        db.SaveChanges();
-        Console.WriteLine("Product deleted successfully.");
+        var product = db.Products.FirstOrDefault(p => p.ProductId == productId);
+        if (product == null)
+        {
+            Console.WriteLine("Product not found.");
+            return;
+        }
 
+        // Optionally: Check for related OrderDetails and handle as needed
+
+        db.Products.Remove(product);
+        db.SaveChanges();
+        Console.WriteLine("Product deleted.");
     }
 
 

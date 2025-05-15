@@ -111,24 +111,34 @@ public class CategoryMethods
     public static void DeleteCategory()
     {
         using var db = new DataContext();
-        var categories = db.Categories.OrderBy(c => c.CategoryId).ToList();
-
-        Console.WriteLine("Select a category to delete:");
-        foreach (var category in categories)
-        {
-            Console.WriteLine($"{category.CategoryId}: {category.CategoryName}");
-        }
-
-        if (!int.TryParse(Console.ReadLine(), out int categoryId) || !categories.Any(c => c.CategoryId == categoryId))
+        Console.WriteLine("Enter the ID of the category to delete:");
+        if (!int.TryParse(Console.ReadLine(), out int categoryId))
         {
             Console.WriteLine("Invalid category ID.");
             return;
         }
 
-        var selectedCategory = db.Categories.First(c => c.CategoryId == categoryId);
-        db.Categories.Remove(selectedCategory);
+        var category = db.Categories.Include(c => c.Products).FirstOrDefault(c => c.CategoryId == categoryId);
+        if (category == null)
+        {
+            Console.WriteLine("Category not found.");
+            return;
+        }
+
+        if (category.Products.Any())
+        {
+            Console.WriteLine("This category has products. Do you want to delete the category and all its products? (y/n)");
+            if (Console.ReadLine()?.ToLower() != "y")
+            {
+                Console.WriteLine("Delete cancelled.");
+                return;
+            }
+            db.Products.RemoveRange(category.Products); // Remove all products in this category
+        }
+
+        db.Categories.Remove(category);
         db.SaveChanges();
-        Console.WriteLine("Category deleted successfully.");
+        Console.WriteLine("Category and related products deleted.");
     }
 
 //display categorie by id
