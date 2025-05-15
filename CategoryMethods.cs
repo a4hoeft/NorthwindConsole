@@ -81,6 +81,31 @@ public class CategoryMethods
         db.SaveChanges();
         Console.WriteLine("Category updated successfully.");
     }
+    //overlod the edit method to take categoryId as a parameter
+    public static void EditCategory(int categoryId)
+    {
+        using var db = new DataContext();
+        var selectedCategory = db.Categories.First(c => c.CategoryId == categoryId);
+        Console.WriteLine($"Current Name: {selectedCategory.CategoryName}");
+        Console.WriteLine($"Current Description: {selectedCategory.Description}");
+
+        Console.WriteLine("Enter new name (or press Enter to keep current):");
+        var newName = Console.ReadLine();
+        if (!string.IsNullOrEmpty(newName))
+        {
+            selectedCategory.CategoryName = newName;
+        }
+
+        Console.WriteLine("Enter new description (or press Enter to keep current):");
+        var newDescription = Console.ReadLine();
+        if (!string.IsNullOrEmpty(newDescription))
+        {
+            selectedCategory.Description = newDescription;
+        }
+
+        db.SaveChanges();
+        Console.WriteLine("Category updated successfully.");
+    }
 
     // Method to delete a category
     public static void DeleteCategory()
@@ -105,4 +130,23 @@ public class CategoryMethods
         db.SaveChanges();
         Console.WriteLine("Category deleted successfully.");
     }
+
+//display categorie by id
+    public static void DisplayCategoryById(int categoryId)
+    {
+        using var db = new DataContext();
+        var category = db.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
+
+        if (category != null)
+        {
+            Console.WriteLine($"Category ID: {category.CategoryId}");
+            Console.WriteLine($"Category Name: {category.CategoryName}");
+            Console.WriteLine($"Description: {category.Description}");
+        }
+        else
+        {
+            Console.WriteLine("Category not found.");
+        }
+    }
+
 }

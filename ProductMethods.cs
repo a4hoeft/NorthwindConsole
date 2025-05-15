@@ -4,22 +4,25 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NorthwindConsole.Model;
 
-public class ProductMethods
-{
-    // Method to view all products
-    public static void ViewProducts()
-    {
-        using var db = new DataContext();
-        var products = db.Products.Include(p => p.Category).OrderBy(p => p.ProductName).ToList();
 
-        Console.WriteLine("Products:");
-        foreach (var product in products)
-        {
-            Console.WriteLine($"{product.ProductId}: {product.ProductName} - {product.Category?.CategoryName ?? "No Category"} - {(product.Discontinued ? "Discontinued" : "Active")}");
-        }
-    }
+
+
+
+public class ProductMethods
+
+{
+
+    // Method to view all products
+   public static void ViewProducts()
+{
+    using var db = new DataContext();
+    var products = db.Products.OrderBy(p => p.ProductName).ToList();
+    Console.WriteLine("Products:");
+   PrintProductList(products);
+}
 
     // Method to add a new product
+
     public static void AddProduct()
     {
         using var db = new DataContext();
@@ -56,6 +59,89 @@ public class ProductMethods
         db.SaveChanges();
         Console.WriteLine($"Product '{product.ProductName}' added successfully.");
     }
+
+    //overloaded add product method to add a product with a category
+    public static void AddProduct(int categoryId)
+    {
+        using var db = new DataContext();
+        var product = new NorthwindConsole.Model.Product();
+
+        Console.WriteLine("Enter Product Name:");
+        product.ProductName = Console.ReadLine()!;
+        Console.WriteLine("Enter Product Price:");
+        product.UnitPrice = decimal.Parse(Console.ReadLine()!);
+        Console.WriteLine("Enter Units in Stock:");
+        product.UnitsInStock = short.Parse(Console.ReadLine()!);
+        Console.WriteLine("Enter Quantity Per Unit:");
+        product.QuantityPerUnit = Console.ReadLine();
+        Console.WriteLine("Is the product discontinued? (true/false):");
+        product.Discontinued = bool.Parse(Console.ReadLine()!);
+
+        if (db.Categories.Any(c => c.CategoryId == categoryId))
+        {
+            product.CategoryId = categoryId;
+            db.Products.Add(product);
+            db.SaveChanges();
+            Console.WriteLine($"Product '{product.ProductName}' added successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Invalid category ID. Product will not be added.");
+        }
+    }   
+    // Method to view products that are discontinued
+    public static void ViewDiscontinuedProducts()
+{
+    using var db = new DataContext();
+    var discontinuedProducts = db.Products.Where(p => p.Discontinued).OrderBy(p => p.ProductName).ToList();
+    Console.WriteLine("Discontinued Products:");
+    PrintProductList(discontinuedProducts);
+}
+    // Method to view products that are active green
+
+   public static void ViewActiveProducts()
+{
+    using var db = new DataContext();
+    var activeProducts = db.Products.Where(p => !p.Discontinued).ToList();
+    PrintProductList(activeProducts);
+}
+//display product with its id
+public static void DisplayProductandId()
+{
+    using var db = new DataContext();
+    var products = db.Products.OrderBy(p => p.ProductId).ToList();
+    Console.WriteLine("Products:");
+    foreach (var product in products)
+    {
+        Console.WriteLine($"{product.ProductId}: {product.ProductName}");
+    }
+}
+
+public static void DisplayProductById(int productId)
+{
+ 
+    Console.WriteLine("Enter the product ID to view details:");
+    if (!int.TryParse(Console.ReadLine(), out productId))
+    {
+        Console.WriteLine("Invalid product ID.");
+        return;
+    }
+    using var db = new DataContext();
+    var product = db.Products.FirstOrDefault(p => p.ProductId == productId);
+    if (product != null)
+    {
+        Console.WriteLine($"Product ID: {product.ProductId}");
+        Console.WriteLine($"Product Name: {product.ProductName}");
+        Console.WriteLine($"Unit Price: {product.UnitPrice}");
+        Console.WriteLine($"Units in Stock: {product.UnitsInStock}");
+        Console.WriteLine($"Quantity Per Unit: {product.QuantityPerUnit}");
+        Console.WriteLine($"Discontinued: {(product.Discontinued ? "Yes" : "No")}");
+    }
+    else
+    {
+        Console.WriteLine("Product not found.");
+    }
+}
 
     // Method to edit an existing product
     public static void EditProduct()
@@ -143,5 +229,31 @@ public class ProductMethods
         db.Products.Remove(selectedProduct);
         db.SaveChanges();
         Console.WriteLine("Product deleted successfully.");
+
     }
+
+
+    public static void PrintProductList(IEnumerable<Product> products)
+{
+    foreach (var p in products)
+    {
+        if (p.Discontinued)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\t{p.ProductName} (Discontinued)");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\t{p.ProductName}");
+        }
+        Console.ResetColor();
+    }
+}
+
+
+
+
+
+
 }
