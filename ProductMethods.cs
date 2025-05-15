@@ -240,12 +240,12 @@ public static void DisplayProductById(int productId)
         if (p.Discontinued)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\t{p.ProductName} (Discontinued)");
+            Console.WriteLine($"\t{p.ProductId}: {p.ProductName} (Discontinued)");
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\t{p.ProductName}");
+            Console.WriteLine($"\t{p.ProductId}: {p.ProductName}");
         }
         Console.ResetColor();
     }
